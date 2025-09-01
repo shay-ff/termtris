@@ -6,7 +6,12 @@
 
 ## Installation
 
-### 1. Create a Virtual Environment
+### 1. Clone the repo
+```bash
+git clone https://github.com/shay-ff/termtris.git
+cd termtris
+```
+### 2. Create a Virtual Environment
 
 **macOS / Unix**
 ```bash
@@ -20,7 +25,7 @@ python -m venv .venv
 .venv\Scripts\activate
 ```
 
-### 2. Install termtris
+### 3. Install termtris
 
 ```bash
 pip install .
@@ -68,4 +73,4 @@ termtris reset    # Reset highscores
 **Scores are stored in your user's config directory:**  
 `~/.config/termtris/termtris.db`
 
-# cli-tetris
+**Have fun!**

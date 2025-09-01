@@ -1,0 +1,39 @@
+Metadata-Version: 2.4
+Name: termtris
+Version: 0.1.0
+Summary: A terminal Tetris game with persistent highscores (curses + SQLite)
+Author-email: ChatGPT <noreply@example.com>
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: platformdirs>=4.0
+
+# termtris
+
+Terminal Tetris you can install and run as a CLI, with persistent highscores.
+
+## Install (editable or local)
+```bash
+pip install .
+# or
+python -m termtris
+# or, without installing:
+python -m termtris play
+```
+
+## Run
+```bash
+termtris         # start the game
+termtris scores  # show top scores
+termtris reset   # reset highscores
+```
+
+## Controls
+- Left/Right: Move
+- Down: Soft drop
+- Z / X: Rotate left / right
+- Space: Hard drop
+- P: Pause
+- N: New game
+- Q: Quit
+
+Scores are stored under your user's config dir (e.g., `~/.config/termtris/termtris.db`).
