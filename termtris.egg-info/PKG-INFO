@@ -9,31 +9,77 @@ Requires-Dist: platformdirs>=4.0
 
 # termtris
 
-Terminal Tetris you can install and run as a CLI, with persistent highscores.
+**Terminal Tetris (termtris)** — a CLI game with persistent highscores.
 
-## Install (editable or local)
+---
+
+## Installation
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/shay-ff/termtris.git
+cd termtris
+```
+### 2. Create a Virtual Environment
+
+**macOS / Unix**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+**Windows**
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+### 3. Install termtris
+
 ```bash
 pip install .
-# or
-python -m termtris
-# or, without installing:
+```
+
+Or run directly (without installing):
+
+```bash
 python -m termtris play
 ```
 
-## Run
+---
+
+## Usage
+
+### Start the Game
+
 ```bash
-termtris         # start the game
-termtris scores  # show top scores
-termtris reset   # reset highscores
+termtris
 ```
 
-## Controls
-- Left/Right: Move
-- Down: Soft drop
-- Z / X: Rotate left / right
-- Space: Hard drop
-- P: Pause
-- N: New game
-- Q: Quit
+### Other Commands
 
-Scores are stored under your user's config dir (e.g., `~/.config/termtris/termtris.db`).
+```bash
+termtris scores   # Show top scores
+termtris reset    # Reset highscores
+```
+
+---
+
+## Controls
+
+| Key        | Action           |
+|------------|------------------|
+| Left/Right | Move             |
+| Down       | Soft drop        |
+| Z / X      | Rotate left/right|
+| Space      | Hard drop        |
+| P          | Pause            |
+| N          | New game         |
+| Q          | Quit             |
+
+---
+
+**Scores are stored in your user's config directory:**  
+`~/.config/termtris/termtris.db`
+
+**Have fun!**

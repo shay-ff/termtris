@@ -19,3 +19,4 @@ dist/
 
 # Windows specific
 Thumbs.db
+.venv/
