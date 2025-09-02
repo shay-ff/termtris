@@ -1,9 +1,7 @@
 Metadata-Version: 2.4
 Name: termtris
-Version: 0.2.0
+Version: 0.2.2
 Summary: A terminal Tetris game with persistent highscores (curses + SQLite)
-Home-page: https://github.com/shay-ff/termtris
-Author: shayan
 Author-email: Shayan <tomohmmdali@gmail.com>
 License: MIT License
         
@@ -35,10 +33,7 @@ Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: platformdirs>=4.0
-Dynamic: author
-Dynamic: home-page
 Dynamic: license-file
-Dynamic: requires-python
 
 # termtris
 

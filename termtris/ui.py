@@ -32,6 +32,23 @@ def _should_use_colors():
     """Check if colors should be used based on global state and terminal capability"""
     return colors_enabled and curses.has_colors()
 
+def _safe_addstr(stdscr, y, x, string, *args):
+    """Safely add a string at position, checking bounds first"""
+    try:
+        h, w = stdscr.getmaxyx()
+        if 0 <= y < h and 0 <= x < w and x + len(string) <= w:
+            stdscr.addstr(y, x, string, *args)
+    except (curses.error, ValueError):
+        pass  # Silently ignore drawing errors
+
+def _check_terminal_size(stdscr):
+    """Check if terminal is large enough for the game"""
+    h, w = stdscr.getmaxyx()
+    # Minimum size: height for board + borders + sidebar, width for board + borders + sidebar
+    min_h = H + 4  # board + borders + some space
+    min_w = 2*W + 20  # board width + borders + sidebar
+    return h >= min_h and w >= min_w
+
 KIND_TO_COLOR = {
     'I': 1,
     'O': 2,
@@ -46,17 +63,23 @@ def draw(stdscr, board: Board, start_time, paused):
     stdscr.erase()
     h, w = stdscr.getmaxyx()
 
+    # Check terminal size first
+    if not _check_terminal_size(stdscr):
+        _safe_addstr(stdscr, h//2, 0, "Terminal too small! Need at least {}x{}".format(2*W + 20, H + 4))
+        stdscr.refresh()
+        return
+
     # Borders and labels
     left = 2
     top = 1
     # draw playfield border
     for y in range(H+2):
-        stdscr.addstr(top + y, left, "|")
-        stdscr.addstr(top + y, left + 2*W + 1, "|")
+        _safe_addstr(stdscr, top + y, left, "|")
+        _safe_addstr(stdscr, top + y, left + 2*W + 1, "|")
     for x in range(2*W + 2):
-        stdscr.addstr(top, left + x, "-")
-        stdscr.addstr(top + H + 1, left + x, "-")
-    stdscr.addstr(top-1, left, " TERMTRIS ")
+        _safe_addstr(stdscr, top, left + x, "-")
+        _safe_addstr(stdscr, top + H + 1, left + x, "-")
+    _safe_addstr(stdscr, top-1, left, " TERMTRIS ")
 
     # draw grid blocks (locked cells)
     for r in range(H):
@@ -67,9 +90,9 @@ def draw(stdscr, board: Board, start_time, paused):
                 ch_x = left + 1 + 2*c
                 if isinstance(cell, str) and _should_use_colors():
                     color_pair = curses.color_pair(KIND_TO_COLOR.get(cell, 0))
-                    stdscr.addstr(ch_y, ch_x, "[]", color_pair)
+                    _safe_addstr(stdscr, ch_y, ch_x, "[]", color_pair)
                 else:
-                    stdscr.addstr(ch_y, ch_x, "[]")
+                    _safe_addstr(stdscr, ch_y, ch_x, "[]")
 
     # draw current piece
     for r, row in enumerate(board.current.cells):
@@ -82,19 +105,19 @@ def draw(stdscr, board: Board, start_time, paused):
                     ch_x = left + 1 + 2*x
                     if _should_use_colors():
                         color_pair = curses.color_pair(KIND_TO_COLOR.get(board.current.kind, 0))
-                        stdscr.addstr(ch_y, ch_x, "[]", color_pair)
+                        _safe_addstr(stdscr, ch_y, ch_x, "[]", color_pair)
                     else:
-                        stdscr.addstr(ch_y, ch_x, "[]")
+                        _safe_addstr(stdscr, ch_y, ch_x, "[]")
 
     # sidebar
     sx = left + 2*W + 6
-    stdscr.addstr(top, sx, "Score: {}".format(board.score))
-    stdscr.addstr(top+1, sx, "Lines: {}".format(board.lines))
-    stdscr.addstr(top+2, sx, "Level: {}".format(board.level))
+    _safe_addstr(stdscr, top, sx, "Score: {}".format(board.score))
+    _safe_addstr(stdscr, top+1, sx, "Lines: {}".format(board.lines))
+    _safe_addstr(stdscr, top+2, sx, "Level: {}".format(board.level))
     elapsed = int(time.time() - start_time)
-    stdscr.addstr(top+3, sx, "Time: {}s".format(elapsed))
+    _safe_addstr(stdscr, top+3, sx, "Time: {}s".format(elapsed))
 
-    stdscr.addstr(top+5, sx, "Next:")
+    _safe_addstr(stdscr, top+5, sx, "Next:")
     # draw next piece miniature
     np = board.next_piece
     for r, row in enumerate(np.cells):
@@ -102,29 +125,29 @@ def draw(stdscr, board: Board, start_time, paused):
             if v:
                 if _should_use_colors():
                     color_pair = curses.color_pair(KIND_TO_COLOR.get(np.kind, 0))
-                    stdscr.addstr(top+6+r, sx + 2*c, "[]", color_pair)
+                    _safe_addstr(stdscr, top+6+r, sx + 2*c, "[]", color_pair)
                 else:
-                    stdscr.addstr(top+6+r, sx + 2*c, "[]")
+                    _safe_addstr(stdscr, top+6+r, sx + 2*c, "[]")
 
-    stdscr.addstr(top+11, sx, "Controls:")
-    stdscr.addstr(top+12, sx, "A/D move")
-    stdscr.addstr(top+13, sx, "↓ soft drop")
-    stdscr.addstr(top+14, sx, "Q/E rotate")
-    stdscr.addstr(top+15, sx, "Space hard drop")
-    stdscr.addstr(top+16, sx, "P pause | X quit")
-    stdscr.addstr(top+17, sx, "C toggle colors")
-    stdscr.addstr(top+18, sx, "Created by: github/shay-ff")
+    _safe_addstr(stdscr, top+11, sx, "Controls:")
+    _safe_addstr(stdscr, top+12, sx, "A/D move")
+    _safe_addstr(stdscr, top+13, sx, "↓ soft drop")
+    _safe_addstr(stdscr, top+14, sx, "Q/E rotate")
+    _safe_addstr(stdscr, top+15, sx, "Space hard drop")
+    _safe_addstr(stdscr, top+16, sx, "P pause | X quit")
+    _safe_addstr(stdscr, top+17, sx, "C toggle colors")
+    _safe_addstr(stdscr, top+18, sx, "Created by: github/shay-ff")
 
     # Show current color state
     color_status = "Colors: ON" if _should_use_colors() else "Colors: OFF"
-    stdscr.addstr(top+19, sx, color_status)
+    _safe_addstr(stdscr, top+19, sx, color_status)
 
     if paused:
-        stdscr.addstr(top + H//2, left + 6, "[PAUSED]")
+        _safe_addstr(stdscr, top + H//2, left + 6, "[PAUSED]")
 
     if board.game_over:
-        stdscr.addstr(top + H//2 - 1, left + 4, "== GAME OVER ==")
-        stdscr.addstr(top + H//2, left + 2, "Enter name and press Enter")
+        _safe_addstr(stdscr, top + H//2 - 1, left + 4, "== GAME OVER ==")
+        _safe_addstr(stdscr, top + H//2, left + 2, "Enter name and press Enter")
 
     stdscr.refresh()
 
