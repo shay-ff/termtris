@@ -2,6 +2,9 @@
 
 **Terminal Tetris (termtris)** — a CLI game with persistent highscores.
 
+![Gameplay snapshot](images/snapshot.png)
+
+
 ---
 
 ## Installation
@@ -58,15 +61,16 @@ termtris reset    # Reset highscores
 
 ## Controls
 
-| Key        | Action           |
-|------------|------------------|
-| Left/Right | Move             |
-| Down       | Soft drop        |
-| Z / X      | Rotate left/right|
-| Space      | Hard drop        |
-| P          | Pause            |
-| N          | New game         |
-| Q          | Quit             |
+| Key        | Action            |
+|------------|-------------------|
+| A / D      | Move left/right   |
+| Down       | Soft drop         |
+| Q / E      | Rotate left/right |
+| Space      | Hard drop         |
+| P          | Pause             |
+| X          | Quit              |
+
+Note: Arrow keys also move left/right in addition to A/D. Colors require a color-capable terminal (e.g., `xterm-256color`).
 
 ---
 

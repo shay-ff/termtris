@@ -63,7 +63,8 @@ class Board:
                 if v:
                     x, y = self.current.x + c, self.current.y + r
                     if 0 <= y < H and 0 <= x < W:
-                        self.grid[y][x] = 1
+                        # Store the piece kind so UI can color locked cells
+                        self.grid[y][x] = self.current.kind
         # Clear lines
         cleared = 0
         new_grid = [row for row in self.grid if any(v == 0 for v in row)]
