@@ -20,3 +20,13 @@ dist/
 # Windows specific
 Thumbs.db
 .venv/
+
+*.tar.gz
+*.zip
+*.rar
+*.7z
+*.iso
+*.dmg
+*.pkg
+*.deb
+*.rpm
