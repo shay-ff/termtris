@@ -6,10 +6,19 @@ build-backend = "setuptools.build_meta"
 name = "termtris"
 version = "0.1.0"
 description = "A terminal Tetris game with persistent highscores (curses + SQLite)"
-authors = [{name = "shayan", email = "tomohmmdali@gmail.com"}]
+authors = [
+    { name = "Shayan", email = "tomohmmdali@gmail.com" }
+]
 readme = "README.md"
 requires-python = ">=3.8"
 dependencies = ["platformdirs>=4.0"]
+license = { file = "LICENSE" }
+keywords = ["tetris", "cli", "game", "terminal", "python"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 
 [project.scripts]
 termtris = "termtris.cli:main"
