@@ -1,2 +1,2 @@
 [console_scripts]
-termtris = termtris.__main__:main
+termtris = termtris.cli:main

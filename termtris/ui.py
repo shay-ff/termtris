@@ -57,11 +57,11 @@ def draw(stdscr, board: Board, start_time, paused):
                 stdscr.addstr(top+6+r, sx + 2*c, "[]")
 
     stdscr.addstr(top+11, sx, "Controls:")
-    stdscr.addstr(top+12, sx, "←/→ move")
+    stdscr.addstr(top+12, sx, "A/D move")
     stdscr.addstr(top+13, sx, "↓ soft drop")
-    stdscr.addstr(top+14, sx, "Z/X rotate")
+    stdscr.addstr(top+14, sx, "Q/E rotate")
     stdscr.addstr(top+15, sx, "Space hard drop")
-    stdscr.addstr(top+16, sx, "P pause | Q quit")
+    stdscr.addstr(top+16, sx, "P pause | X quit")
 
     if paused:
         stdscr.addstr(top + H//2, left + 6, "[PAUSED]")
@@ -112,21 +112,21 @@ def _main(stdscr):
                 elif 32 <= ch <= 126 and len(name_input) < 20:
                     name_input += chr(ch)
             else:
-                if ch in (ord('q'), ord('Q')):
+                if ch in (ord('x'), ord('X')):
                     break
                 elif ch in (ord('p'), ord('P')):
                     paused = not paused
                 elif not paused:
-                    if ch == curses.KEY_LEFT:
+                    if ch == curses.KEY_LEFT or ch in (ord('a'), ord('A')):
                         board.move(-1, 0)
-                    elif ch == curses.KEY_RIGHT:
+                    elif ch == curses.KEY_RIGHT or ch in (ord('d'), ord('D')):
                         board.move(1, 0)
                     elif ch == curses.KEY_DOWN:
                         board.move(0, 1)
                         board.score += 1  # soft drop bonus
-                    elif ch in (ord('z'), ord('Z')):
+                    elif ch in (ord('q'), ord('Q')):
                         board.rotate_left()
-                    elif ch in (ord('x'), ord('X')):
+                    elif ch in (ord('e'), ord('E')):
                         board.rotate_right()
                     elif ch == ord(' '):
                         board.hard_drop()
