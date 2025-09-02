@@ -14,6 +14,11 @@ build/
 dist/
 *.egg-info/
 
+# PyPI distribution files
+*.tar.gz
+*.whl
+*.egg
+
 # macOS specific
 .DS_Store
 
@@ -21,12 +26,13 @@ dist/
 Thumbs.db
 .venv/
 
-*.tar.gz
-*.zip
-*.rar
-*.7z
-*.iso
-*.dmg
-*.pkg
-*.deb
-*.rpm
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp

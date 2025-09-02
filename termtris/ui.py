@@ -5,6 +5,9 @@ from datetime import datetime
 
 TICK_BASE = 0.6  # base seconds per tick at level 1
 
+# Global color toggle state
+colors_enabled = True
+
 def _speed_for_level(level:int)->float:
     # Exponential-ish decay; faster at higher levels
     return max(0.05, TICK_BASE * (0.85 ** (level-1)))
@@ -24,6 +27,10 @@ def _init_colors():
     curses.init_pair(6, curses.COLOR_BLUE, -1)
     # Orange may not exist; approximate with yellow or default
     curses.init_pair(7, curses.COLOR_YELLOW, -1)
+
+def _should_use_colors():
+    """Check if colors should be used based on global state and terminal capability"""
+    return colors_enabled and curses.has_colors()
 
 KIND_TO_COLOR = {
     'I': 1,
@@ -58,7 +65,7 @@ def draw(stdscr, board: Board, start_time, paused):
             if cell:
                 ch_y = top + 1 + r
                 ch_x = left + 1 + 2*c
-                if isinstance(cell, str) and curses.has_colors():
+                if isinstance(cell, str) and _should_use_colors():
                     color_pair = curses.color_pair(KIND_TO_COLOR.get(cell, 0))
                     stdscr.addstr(ch_y, ch_x, "[]", color_pair)
                 else:
@@ -73,7 +80,7 @@ def draw(stdscr, board: Board, start_time, paused):
                 if 0 <= y < H and 0 <= x < W:
                     ch_y = top + 1 + y
                     ch_x = left + 1 + 2*x
-                    if curses.has_colors():
+                    if _should_use_colors():
                         color_pair = curses.color_pair(KIND_TO_COLOR.get(board.current.kind, 0))
                         stdscr.addstr(ch_y, ch_x, "[]", color_pair)
                     else:
@@ -93,7 +100,7 @@ def draw(stdscr, board: Board, start_time, paused):
     for r, row in enumerate(np.cells):
         for c, v in enumerate(row):
             if v:
-                if curses.has_colors():
+                if _should_use_colors():
                     color_pair = curses.color_pair(KIND_TO_COLOR.get(np.kind, 0))
                     stdscr.addstr(top+6+r, sx + 2*c, "[]", color_pair)
                 else:
@@ -105,7 +112,12 @@ def draw(stdscr, board: Board, start_time, paused):
     stdscr.addstr(top+14, sx, "Q/E rotate")
     stdscr.addstr(top+15, sx, "Space hard drop")
     stdscr.addstr(top+16, sx, "P pause | X quit")
+    stdscr.addstr(top+17, sx, "C toggle colors")
     stdscr.addstr(top+18, sx, "Created by: github/shay-ff")
+
+    # Show current color state
+    color_status = "Colors: ON" if _should_use_colors() else "Colors: OFF"
+    stdscr.addstr(top+19, sx, color_status)
 
     if paused:
         stdscr.addstr(top + H//2, left + 6, "[PAUSED]")
@@ -120,6 +132,7 @@ def run_curses():
     curses.wrapper(_main)
 
 def _main(stdscr):
+    global colors_enabled
     curses.curs_set(0)
     stdscr.nodelay(True)
     stdscr.keypad(True)
@@ -161,6 +174,8 @@ def _main(stdscr):
                     break
                 elif ch in (ord('p'), ord('P')):
                     paused = not paused
+                elif ch in (ord('c'), ord('C')):
+                    colors_enabled = not colors_enabled
                 elif not paused:
                     if ch == curses.KEY_LEFT or ch in (ord('a'), ord('A')):
                         board.move(-1, 0)

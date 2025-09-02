@@ -1,5 +1,7 @@
+LICENSE
 README.md
 pyproject.toml
+setup.py
 termtris/__init__.py
 termtris/__main__.py
 termtris/board.py

@@ -9,6 +9,32 @@ def _speed_for_level(level:int)->float:
     # Exponential-ish decay; faster at higher levels
     return max(0.05, TICK_BASE * (0.85 ** (level-1)))
 
+def _init_colors():
+    if not curses.has_colors():
+        return
+    curses.start_color()
+    curses.use_default_colors()
+    # Map tetromino kinds to color pairs
+    # 1:I cyan, 2:O yellow, 3:T magenta, 4:S green, 5:Z red, 6:J blue, 7:L orange-ish
+    curses.init_pair(1, curses.COLOR_CYAN, -1)
+    curses.init_pair(2, curses.COLOR_YELLOW, -1)
+    curses.init_pair(3, curses.COLOR_MAGENTA, -1)
+    curses.init_pair(4, curses.COLOR_GREEN, -1)
+    curses.init_pair(5, curses.COLOR_RED, -1)
+    curses.init_pair(6, curses.COLOR_BLUE, -1)
+    # Orange may not exist; approximate with yellow or default
+    curses.init_pair(7, curses.COLOR_YELLOW, -1)
+
+KIND_TO_COLOR = {
+    'I': 1,
+    'O': 2,
+    'T': 3,
+    'S': 4,
+    'Z': 5,
+    'J': 6,
+    'L': 7,
+}
+
 def draw(stdscr, board: Board, start_time, paused):
     stdscr.erase()
     h, w = stdscr.getmaxyx()
@@ -25,11 +51,18 @@ def draw(stdscr, board: Board, start_time, paused):
         stdscr.addstr(top + H + 1, left + x, "-")
     stdscr.addstr(top-1, left, " TERMTRIS ")
 
-    # draw grid blocks
+    # draw grid blocks (locked cells)
     for r in range(H):
         for c in range(W):
-            if board.grid[r][c]:
-                stdscr.addstr(top + 1 + r, left + 1 + 2*c, "[]")
+            cell = board.grid[r][c]
+            if cell:
+                ch_y = top + 1 + r
+                ch_x = left + 1 + 2*c
+                if isinstance(cell, str) and curses.has_colors():
+                    color_pair = curses.color_pair(KIND_TO_COLOR.get(cell, 0))
+                    stdscr.addstr(ch_y, ch_x, "[]", color_pair)
+                else:
+                    stdscr.addstr(ch_y, ch_x, "[]")
 
     # draw current piece
     for r, row in enumerate(board.current.cells):
@@ -38,7 +71,13 @@ def draw(stdscr, board: Board, start_time, paused):
                 y = board.current.y + r
                 x = board.current.x + c
                 if 0 <= y < H and 0 <= x < W:
-                    stdscr.addstr(top + 1 + y, left + 1 + 2*x, "[]")
+                    ch_y = top + 1 + y
+                    ch_x = left + 1 + 2*x
+                    if curses.has_colors():
+                        color_pair = curses.color_pair(KIND_TO_COLOR.get(board.current.kind, 0))
+                        stdscr.addstr(ch_y, ch_x, "[]", color_pair)
+                    else:
+                        stdscr.addstr(ch_y, ch_x, "[]")
 
     # sidebar
     sx = left + 2*W + 6
@@ -54,14 +93,19 @@ def draw(stdscr, board: Board, start_time, paused):
     for r, row in enumerate(np.cells):
         for c, v in enumerate(row):
             if v:
-                stdscr.addstr(top+6+r, sx + 2*c, "[]")
+                if curses.has_colors():
+                    color_pair = curses.color_pair(KIND_TO_COLOR.get(np.kind, 0))
+                    stdscr.addstr(top+6+r, sx + 2*c, "[]", color_pair)
+                else:
+                    stdscr.addstr(top+6+r, sx + 2*c, "[]")
 
     stdscr.addstr(top+11, sx, "Controls:")
-    stdscr.addstr(top+12, sx, "←/→ move")
+    stdscr.addstr(top+12, sx, "A/D move")
     stdscr.addstr(top+13, sx, "↓ soft drop")
-    stdscr.addstr(top+14, sx, "Z/X rotate")
+    stdscr.addstr(top+14, sx, "Q/E rotate")
     stdscr.addstr(top+15, sx, "Space hard drop")
-    stdscr.addstr(top+16, sx, "P pause | Q quit")
+    stdscr.addstr(top+16, sx, "P pause | X quit")
+    stdscr.addstr(top+18, sx, "Created by: github/shay-ff")
 
     if paused:
         stdscr.addstr(top + H//2, left + 6, "[PAUSED]")
@@ -79,6 +123,7 @@ def _main(stdscr):
     curses.curs_set(0)
     stdscr.nodelay(True)
     stdscr.keypad(True)
+    _init_colors()
 
     board = Board()
     start_time = time.time()
@@ -112,21 +157,21 @@ def _main(stdscr):
                 elif 32 <= ch <= 126 and len(name_input) < 20:
                     name_input += chr(ch)
             else:
-                if ch in (ord('q'), ord('Q')):
+                if ch in (ord('x'), ord('X')):
                     break
                 elif ch in (ord('p'), ord('P')):
                     paused = not paused
                 elif not paused:
-                    if ch == curses.KEY_LEFT:
+                    if ch == curses.KEY_LEFT or ch in (ord('a'), ord('A')):
                         board.move(-1, 0)
-                    elif ch == curses.KEY_RIGHT:
+                    elif ch == curses.KEY_RIGHT or ch in (ord('d'), ord('D')):
                         board.move(1, 0)
                     elif ch == curses.KEY_DOWN:
                         board.move(0, 1)
                         board.score += 1  # soft drop bonus
-                    elif ch in (ord('z'), ord('Z')):
+                    elif ch in (ord('q'), ord('Q')):
                         board.rotate_left()
-                    elif ch in (ord('x'), ord('X')):
+                    elif ch in (ord('e'), ord('E')):
                         board.rotate_right()
                     elif ch == ord(' '):
                         board.hard_drop()
