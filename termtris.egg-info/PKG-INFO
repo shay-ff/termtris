@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: termtris
-Version: 0.2.2
+Version: 0.2.3
 Summary: A terminal Tetris game with persistent highscores (curses + SQLite)
 Author-email: Shayan <tomohmmdali@gmail.com>
 License: MIT License
@@ -106,6 +106,7 @@ termtris reset    # Reset highscores
 | Space      | Hard drop         |
 | P          | Pause             |
 | X          | Quit              |
+| C          | Toggle Colors     | 
 
 Note: Arrow keys also move left/right in addition to A/D. Colors require a color-capable terminal (e.g., `xterm-256color`).
 
