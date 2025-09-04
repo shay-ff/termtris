@@ -81,7 +81,7 @@ def draw(stdscr, board: Board, start_time, paused):
         _safe_addstr(stdscr, top + H + 1, left + x, "-")
     _safe_addstr(stdscr, top-1, left, " TERMTRIS ")
 
-    # draw grid blocks (locked cells)
+    # draw grid blocks (locked cells) - solid style
     for r in range(H):
         for c in range(W):
             cell = board.grid[r][c]
@@ -90,11 +90,28 @@ def draw(stdscr, board: Board, start_time, paused):
                 ch_x = left + 1 + 2*c
                 if isinstance(cell, str) and _should_use_colors():
                     color_pair = curses.color_pair(KIND_TO_COLOR.get(cell, 0))
-                    _safe_addstr(stdscr, ch_y, ch_x, "[]", color_pair)
+                    _safe_addstr(stdscr, ch_y, ch_x, "██", color_pair)
                 else:
-                    _safe_addstr(stdscr, ch_y, ch_x, "[]")
+                    _safe_addstr(stdscr, ch_y, ch_x, "██")
 
-    # draw current piece
+    # draw ghost piece (where current piece will land) - boundary style
+    ghost_x, ghost_y = board.get_ghost_position()
+    for r, row in enumerate(board.current.cells):
+        for c, v in enumerate(row):
+            if v:
+                y = ghost_y + r
+                x = ghost_x + c
+                if 0 <= y < H and 0 <= x < W:
+                    ch_y = top + 1 + y
+                    ch_x = left + 1 + 2*x
+                    # Draw ghost piece with boundary style (like old grid style)
+                    if _should_use_colors():
+                        color_pair = curses.color_pair(KIND_TO_COLOR.get(board.current.kind, 0))
+                        _safe_addstr(stdscr, ch_y, ch_x, "[]", color_pair)
+                    else:
+                        _safe_addstr(stdscr, ch_y, ch_x, "[]")
+
+    # draw current piece - solid style
     for r, row in enumerate(board.current.cells):
         for c, v in enumerate(row):
             if v:
@@ -105,9 +122,9 @@ def draw(stdscr, board: Board, start_time, paused):
                     ch_x = left + 1 + 2*x
                     if _should_use_colors():
                         color_pair = curses.color_pair(KIND_TO_COLOR.get(board.current.kind, 0))
-                        _safe_addstr(stdscr, ch_y, ch_x, "[]", color_pair)
+                        _safe_addstr(stdscr, ch_y, ch_x, "██", color_pair)
                     else:
-                        _safe_addstr(stdscr, ch_y, ch_x, "[]")
+                        _safe_addstr(stdscr, ch_y, ch_x, "██")
 
     # sidebar
     sx = left + 2*W + 6
@@ -118,16 +135,16 @@ def draw(stdscr, board: Board, start_time, paused):
     _safe_addstr(stdscr, top+3, sx, "Time: {}s".format(elapsed))
 
     _safe_addstr(stdscr, top+5, sx, "Next:")
-    # draw next piece miniature
+    # draw next piece miniature - solid style
     np = board.next_piece
     for r, row in enumerate(np.cells):
         for c, v in enumerate(row):
             if v:
                 if _should_use_colors():
                     color_pair = curses.color_pair(KIND_TO_COLOR.get(np.kind, 0))
-                    _safe_addstr(stdscr, top+6+r, sx + 2*c, "[]", color_pair)
+                    _safe_addstr(stdscr, top+6+r, sx + 2*c, "██", color_pair)
                 else:
-                    _safe_addstr(stdscr, top+6+r, sx + 2*c, "[]")
+                    _safe_addstr(stdscr, top+6+r, sx + 2*c, "██")
 
     _safe_addstr(stdscr, top+11, sx, "Controls:")
     _safe_addstr(stdscr, top+12, sx, "A/D move")

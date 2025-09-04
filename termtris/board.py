@@ -124,6 +124,14 @@ class Board:
         self.score += 2 * dist
         self.lock_piece()
 
+    def get_ghost_position(self):
+        """Calculate where the current piece will land (ghost piece position)"""
+        ghost_y = self.current.y
+        # Drop the piece down until it can't move further
+        while self.can_place(self.current, self.current.x, ghost_y + 1):
+            ghost_y += 1
+        return self.current.x, ghost_y
+
     def tick(self):
         if not self.move(0,1):
             self.lock_piece()

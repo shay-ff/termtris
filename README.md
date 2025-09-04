@@ -2,7 +2,7 @@
 
 **Terminal Tetris (termtris)** — a CLI Tetris-like game with persistent highscores.
 
-![Gameplay snapshot](images/snapshot.png)
+<img src="images/snapshot.png" width="400" alt="Gameplay snapshot">
 
 ---
 
@@ -85,6 +85,8 @@ After installing, run:
 | P          | Pause             |
 | X          | Quit              |
 | C          | Toggle Colors     |
+
+**Ghost Piece**: The game shows a boundary-style preview (ghost piece) of where the current piece will land, helping you plan your moves. The ghost piece updates automatically when you move or rotate the current piece.
 
 Arrow keys are supported in addition to A/D.  
 Colors require a color-capable terminal (`xterm-256color`, Windows terminal with proper support, etc).
