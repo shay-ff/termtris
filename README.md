@@ -1,6 +1,6 @@
-# termtris
+# tetriskekw (termtris)
 
-**Terminal Tetris (termtris)** — a CLI Tetris-like game with persistent highscores.
+**Terminal Tetris** — a CLI Tetris-like game with persistent highscores.
 
 <img src="images/snapshot.png" width="400" alt="Gameplay snapshot">
 
@@ -8,15 +8,20 @@
 
 ## Installation
 
+Available on PyPI as `tetriskekw`.
+
+- PyPI project page: [tetriskekw](https://pypi.org/project/tetriskekw/)
+- Releases (manage): [manage releases](https://pypi.org/manage/project/tetriskekw/releases/)
+
 ### Recommended (for most users): `pipx` — isolated global CLI install
 
 - Install pipx (if you don't have it):  
   - macOS (Homebrew): `brew install pipx` and then `pipx ensurepath`  
-- Install termtris from PyPI:  
-  `pipx install termtris`
+- Install from PyPI:  
+  `pipx install tetriskekw`
 
 **Install from TestPyPI (for testing a pre-release on TestPyPI):**  
-`pipx install --pip-args="--index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple" termtris`
+`pipx install --pip-args="--index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple" tetriskekw`
 
 ---
 
@@ -26,19 +31,19 @@
 1. `python3 -m venv .venv`  
 2. `source .venv/bin/activate`  
 3. `python3 -m pip install --upgrade pip`  
-4. `python3 -m pip install termtris`
+4. `python3 -m pip install tetriskekw`
 
 **Windows**  
 1. `python -m venv .venv`  
 2. `.venv\Scripts\activate`  
 3. `python -m pip install --upgrade pip`  
-4. `python -m pip install termtris`
+4. `python -m pip install tetriskekw`
 
 ---
 
 ### Install directly from TestPyPI (for testing)
 
-`python3 -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple termtris`
+`python3 -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple tetriskekw`
 
 ---
 
@@ -54,7 +59,7 @@ Recommended fixes (in order):
 1. Use **pipx** (best for CLI tools) — shown above.  
 2. Use a **virtual environment** — shown above.  
 3. Only if you understand the risk: use `--break-system-packages` (not recommended):  
-   `python3 -m pip install termtris --break-system-packages`
+   `python3 -m pip install tetriskekw --break-system-packages`
 
 ---
 
@@ -103,9 +108,9 @@ High scores are stored in the user config directory:
 
 ## Uninstall
 
-- If installed with pipx: `pipx uninstall termtris`  
+- If installed with pipx: `pipx uninstall tetriskekw`  
 - If installed in a virtualenv: deactivate and remove the `.venv` folder  
-- If installed with pip globally (not recommended): `python3 -m pip uninstall termtris`
+- If installed with pip globally (not recommended): `python3 -m pip uninstall tetriskekw`
 
 ---
 
@@ -125,7 +130,7 @@ To install the package locally for development:
 ## Notes
 
 - If you published a test release on TestPyPI, the project page is available at:  
-  `https://test.pypi.org/project/termtris/`  
+  `https://test.pypi.org/project/tetriskekw/`  
 - For a frictionless install experience for end-users, **pipx** is the recommended distribution method for CLI apps.
 
 ---
